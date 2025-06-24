@@ -14,7 +14,7 @@
                             <th>Tanggal</th>
                             <th>Nama Produk</th>
                             <th>Qty</th>
-                            <th>Harga Satuan</th>
+                            <th>HPP</th>
                             <th>Subtotal</th>
                             <th>Profit</th>
             </tr>
@@ -41,7 +41,7 @@
                                 <td style="width: 180px;" align="left">
                                     <span>{{ $d->qty }}</span>
                                 </td>
-                                <td style="width: 180px;">Rp {{ number_format($d->harga_satuan, 0, ',', '.') }}</td>
+                                <td style="width: 180px;">Rp {{ number_format($d->product->harga_beli, 0, ',', '.') }}</td>
                                 <td style="width: 180px;">Rp {{ number_format($d->total_harga, 0, ',', '.') }}</td>
                                 <td style="width: 180px;">
                                     <span>Rp {{ number_format($profit, 0, ',', '.') }}</span>

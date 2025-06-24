@@ -80,7 +80,7 @@ class TransactionController extends Controller
         }
 
         DB::commit();
-        return redirect()->route('index')->with('success', 'Transaksi berhasil disimpan.');
+        return redirect()->route('transactions.index')->with('success', 'Transaksi berhasil disimpan.');
     } catch (\Exception $e) {
         DB::rollback();
         // dd($e->getMessage());
