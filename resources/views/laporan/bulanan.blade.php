@@ -84,7 +84,15 @@
                                 <td>
                                     <span class="fw-semibold">{{ $d->product->name }}</span>
                                     @if($d->product->varian)
-                                        <span class="badge bg-info text-white ms-1">{{ $d->product->varian }}</span>
+                                        @if ($d->product->varian == 'Pedas' )
+                                        <span class="badge bg-danger text-white ms-1">{{ $d->product->varian }}</span>
+                                        @elseif ($d->product->varian == "Original")
+                                        <span class="badge bg-success text-white ms-1">{{ $d->product->varian }}</span>                                            
+                                        @elseif ($d->product->varian == "Asin")
+                                        <span class="badge bg-warning text-white ms-1">{{ $d->product->varian }}</span>
+                                        @else
+                                        <span class="badge bg-info text-white ms-1">{{ $d->product->varian }}</span>                               
+                                    @endif             
                                     @endif
                                 </td>
                                 <td>

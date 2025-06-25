@@ -40,7 +40,14 @@
                         <span class="fw-semibold fs-5">Penjualan & Profit Bulan Ini</span>
                     </div>
                     <div class="card-body d-flex justify-content-center align-items-center" style="height:220px;">
-                        <canvas id="circleChart" height="180"></canvas>
+                        <canvas id="circleChart" style="
+                                max-width: 320px;
+                                max-height: 180px;
+                                width: 100% !important;
+                                height: auto !important;
+                                margin: 0 auto;
+                                display: block;
+                        "></canvas>
                     </div>
                 </div>
                 <!-- Chart Stok Produk -->
@@ -139,11 +146,11 @@
                 ],
                 borderWidth: 2,
                 borderColor: '#fff',
-                hoverOffset: 8
+                hoverOffset: 7
             }]
         },
         options: {
-            cutout: '70%',
+            cutout: '50%',
             plugins: {
                 legend: {
                     display: true,
