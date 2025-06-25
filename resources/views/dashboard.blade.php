@@ -14,33 +14,50 @@
         </div>
     </div>
 
-        @if($lowStockProducts->count())
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Perhatian:</strong> Ada produk stok rendah:
-            <ul class="mb-0">
-                @foreach($lowStockProducts as $p)
-                <li>{{ $p->name }} <span class="badge bg-danger">{{ $p->stok }}</span></li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+    @if($lowStockProducts->count())
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Perhatian:</strong> Ada produk stok rendah:
+        <ul class="mb-0">
+            @foreach($lowStockProducts as $p)
+            <li>{{ $p->name }} <span class="badge bg-danger">{{ $p->stok }}</span></li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     @endif
 
     <div class="row g-4">
+        <!-- Kiri: Chart Penjualan & Profit + Chart Stok Produk -->
         <div class="col-12 col-lg-7">
-            <div class="card border-0 shadow-lg h-100">
-                <div class="card-header bg-white border-0 pb-0 d-flex align-items-center">
-                    <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style="width:36px;height:36px;">
-                        <i class="bi bi-bar-chart-fill text-primary"></i>
+            <div class="d-flex flex-column gap-4 h-100">
+                <!-- Chart Penjualan & Profit (Circle) -->
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-white border-0 pb-0 d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style="width:36px;height:36px;">
+                            <i class="bi bi-pie-chart-fill text-success"></i>
+                        </div>
+                        <span class="fw-semibold fs-5">Penjualan & Profit Bulan Ini</span>
                     </div>
-                    <span class="fw-semibold fs-5">Stok Produk</span>
+                    <div class="card-body d-flex justify-content-center align-items-center" style="height:220px;">
+                        <canvas id="circleChart" height="180"></canvas>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <canvas id="stokChart" height="120"></canvas>
+                <!-- Chart Stok Produk -->
+                <div class="card border-0 shadow-lg flex-grow-1">
+                    <div class="card-header bg-white border-0 pb-0 d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style="width:36px;height:36px;">
+                            <i class="bi bi-bar-chart-fill text-primary"></i>
+                        </div>
+                        <span class="fw-semibold fs-5">Stok Produk</span>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="stokChart" height="120"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- Kanan: Riwayat Transaksi Terbaru -->
         <div class="col-12 col-lg-5">
             <div class="card border-0 shadow-lg h-100">
                 <div class="card-header bg-white border-0 pb-0 d-flex align-items-center">
@@ -49,8 +66,8 @@
                     </div>
                     <span class="fw-semibold fs-5">Riwayat Transaksi Terbaru</span>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive" style="max-height: 340px; overflow-y: auto;">
+                <div class="card-body p-0" style="height: 480px;">
+                    <div class="table-responsive" style="max-height: 100%; overflow-y: auto;">
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
@@ -62,19 +79,18 @@
                             </thead>
                             <tbody>
                             @forelse($transactions as $trx)
-                            @php
-                                $profit = 0;
-                                
-                            @endphp
-                            @foreach($trx->details as $d)
-
-                            @php
-                                $hpp = $trx->product->harga_beli ?? 0;
-                                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
-                                $profit += $produkProfit;
-                                $totalProduct = $d->product->count();
-                            @endphp
-                            @endforeach
+                                @php
+                                    $profit = 0;
+                                    $totalProduct = 0;
+                                @endphp
+                                @foreach($trx->details as $d)
+                                    @php
+                                        $hpp = $d->product->harga_beli ?? 0;
+                                        $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
+                                        $profit += $produkProfit;
+                                        $totalProduct++;
+                                    @endphp
+                                @endforeach
                                 <tr>
                                     <td>
                                         <span class="fw-semibold">{{ $trx->nama_pembeli }}</span>
@@ -108,34 +124,80 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const ctx = document.getElementById('stokChart').getContext('2d');
-const stokChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: @json($products->pluck('name')),
-        datasets: [{
-            label: 'Stok',
-            data: @json($products->pluck('stok')),
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.85)',
-                'rgba(59, 130, 246, 0.85)',
-                'rgba(13, 110, 253, 0.85)',
-                'rgba(0, 123, 255, 0.85)',
-                'rgba(0, 172, 193, 0.85)'
-            ],
-            borderRadius: 12,
-            maxBarThickness: 40
-        }]
-    },
-    options: {
-        plugins: {
-            legend: { display: false }
+    // Data untuk chart penjualan & profit (circle)
+    const totalPenjualan = {{ $totalPenjualan ?? 0 }};
+    const totalProfit = {{ $totalProfit ?? 0 }};
+    const circleChart = new Chart(document.getElementById('circleChart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Penjualan', 'Profit'],
+            datasets: [{
+                data: [totalPenjualan, totalProfit],
+                backgroundColor: [
+                    'rgba(13, 110, 253, 0.85)',
+                    'rgba(34, 197, 94, 0.85)'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff',
+                hoverOffset: 8
+            }]
         },
-        scales: {
-            y: { beginAtZero: true }
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 14 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            let value = context.parsed;
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += 'Rp ' + value.toLocaleString('id-ID');
+                            return label;
+                        }
+                    }
+                }
+            }
         }
-    }
-});
+    });
+
+    // Chart stok produk (bar)
+    const ctx = document.getElementById('stokChart').getContext('2d');
+    const stokChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @json($products->pluck('name')),
+            datasets: [{
+                label: 'Stok',
+                data: @json($products->pluck('stok')),
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.85)',
+                    'rgba(59, 130, 246, 0.85)',
+                    'rgba(13, 110, 253, 0.85)',
+                    'rgba(0, 123, 255, 0.85)',
+                    'rgba(0, 172, 193, 0.85)'
+                ],
+                borderRadius: 12,
+                maxBarThickness: 40
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
 </script>
 
 <!-- Bootstrap Icons (jika belum ada di layout) -->
