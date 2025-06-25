@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            // UserSeeder::class,
+            UserSeeder::class,
             // ProductSeeder::class,
-            TransactionSeeder::class
+            // TransactionSeeder::class
         ]);
     }
 }

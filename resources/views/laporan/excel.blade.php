@@ -53,7 +53,7 @@
         <tfoot>
             <tr>
                 <td colspan="5" align="right"><strong>Total Penjualan:</strong></td>
-                <td >{{ number_format($totalPenjualan, 0, ',', '.') }}</td>
+                <td >Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="5" align="right"><strong>Total Profit:</strong></td>

@@ -93,6 +93,6 @@
         </tfoot>
     </table>
 
-    <p style="text-align: right; margin-top: 40px;">Dicetak pada: {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</p>
+    <p style="text-align: right; margin-top: 40px;">Dicetak pada: {{ \Carbon\Carbon::now()->setTimeZone('Asia/Jakarta')->format('d/m/Y H:i') }}</p>
 </body>
 </html>
