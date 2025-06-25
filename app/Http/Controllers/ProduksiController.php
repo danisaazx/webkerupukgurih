@@ -20,7 +20,7 @@ class ProduksiController extends Controller
      */
     public function index()
     {
-        $produksis = Produksi::all();
+        $produksis = Produksi::latest()->get();
         return view('produksi.index', compact('produksis'));
     }
 
@@ -69,6 +69,11 @@ class ProduksiController extends Controller
 
             foreach ($recipes as $resep) {
                 $jumlahTerpakai= $resep->qty_per_batch * $request->jumlah_produksi;
+
+                $bahanBaku = BahanBaku::findOrFail($resep->bahan_baku_id);
+
+                $bahanBaku->stok -= $jumlahTerpakai;
+                $bahanBaku->save();
 
                 ProduksiDetail::create([
                     'produksi_id' => $produksi->id,
