@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('varian');
             $table->integer('stok')->default(0);
-            $table->decimal('harga_beli');
+            $table->decimal('hpp');
             $table->decimal('harga_jual');
             $table->timestamps();
         });

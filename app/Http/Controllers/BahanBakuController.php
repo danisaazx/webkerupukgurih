@@ -43,6 +43,12 @@ class BahanBakuController extends Controller
             'harga_beli'=>'required|numeric|min:0',
         ]);
 
+        $existing = BahanBaku::whereRaw('LOWER(name) = ?', [strtolower($request->name)])->first();
+
+        if ($existing) {
+            return redirect()->back()->with('error', 'Bahan baku "' . $existing->name . '" sudah ada di database!');
+        }
+
         BahanBaku::create($request->all());
         return redirect()->route('bahan_baku.index')->with('success', 'Bahan baku berhasil ditambahkan!');
     }
@@ -85,6 +91,14 @@ class BahanBakuController extends Controller
             'harga_beli' => 'required|numeric|min:0',
         ]);
 
+        $existing = BahanBaku::whereRaw('LOWER(name) = ?', [strtolower($request->name)])
+                ->where('id', '!=', $bahanBaku->id)
+                ->first();
+
+        if ($existing) {
+            return redirect()->back()->with('error', 'Bahan baku "' . $existing->name . '" sudah ada di database!');
+        }
+
         $bahanBaku->update($request->all());
         return redirect()->route('bahan_baku.index')->with('success', 'Bahan baku berhasil diupdate!');
     }
@@ -95,9 +109,11 @@ class BahanBakuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BahanBaku $bahanBaku)
+        public function destroy($id)
     {
+        $bahanBaku = BahanBaku::findOrFail($id);
         $bahanBaku->delete();
-        return redirect()->route('bahan_baku.index')->with('Bahan baku Berhasil dihapus!');
+
+        return redirect()->route('bahan_baku.index')->with('success', 'Bahan baku berhasil dihapus!');
     }
 }

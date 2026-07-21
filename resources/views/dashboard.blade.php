@@ -26,6 +26,28 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     @endif
+    
+    @if($produksiExpired->count())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-calendar-x me-2"></i>
+        <strong>Perhatian:</strong> Ada {{ $produksiExpired->count() }} produk yang sudah/akan kadaluarsa:
+        <ul class="mb-0">
+            @foreach($produksiExpired as $p)
+                @php $s = $p->status_expired; @endphp
+                <li>
+                    {{ $p->product->name }}
+                    ({{ $p->jumlah_produksi }} pcs) —
+                    @if($s['status'] === 'expired')
+                        <span class="badge bg-danger">Kadaluarsa {{ $s['days'] }} hari lalu</span>
+                    @else
+                        <span class="badge bg-warning text-dark">{{ $s['days'] }} hari lagi</span>
+                    @endif
+                </li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
 
     <div class="row g-4">
         <!-- Kiri: Chart Penjualan & Profit + Chart Stok Produk -->
@@ -92,7 +114,7 @@
                                 @endphp
                                 @foreach($trx->details as $d)
                                     @php
-                                        $hpp = $d->product->harga_beli ?? 0;
+                                        $hpp = $d->product->hpp ?? 0;
                                         $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                                         $profit += $produkProfit;
                                         $totalProduct++;

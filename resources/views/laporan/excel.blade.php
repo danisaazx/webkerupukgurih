@@ -23,13 +23,13 @@
                         @foreach($transaksi as $t)
                         @foreach($t->details as $d)
                             @php
-                                $hpp = $d->product->harga_beli ?? 0;
+                                $hpp = $d->product->hpp ?? 0;
                                 $profit = ($d->harga_satuan - $hpp) * $d->qty;
                             @endphp
                             <tr>
                                 <td style="width: 180px;">
                                     <span>
-                                        {{ \Carbon\Carbon::parse($d->tanggal_penjualan)->format('d/m/Y') }}
+                                        {{ \Carbon\Carbon::parse($t->tanggal_pembelian)->format('d/m/Y') }}
                                     </span>
                                 </td>
                                 <td style="width: 180px;">
@@ -41,8 +41,8 @@
                                 <td style="width: 180px;" align="left">
                                     <span>{{ $d->qty }}</span>
                                 </td>
-                                <td style="width: 180px;">Rp {{ number_format($d->product->harga_beli, 0, ',', '.') }}</td>
-                                <td style="width: 180px;">Rp {{ number_format($d->total_harga, 0, ',', '.') }}</td>
+                                <td style="width: 180px;">Rp {{ number_format($d->product->hpp, 0, ',', '.') }}</td>
+                                <td style="width: 180px;">Rp {{ number_format($d->qty * $d->harga_satuan, 0, ',', '.') }}</td>
                                 <td style="width: 180px;">
                                     <span>Rp {{ number_format($profit, 0, ',', '.') }}</span>
                                 </td>

@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
             'name' => 'Kerupuk Bawang',
             'varian' => 'Pedas',
             'stok' => 100,
-            'harga_beli' => 5000,
+            'hpp' => 5000,
             'harga_jual' => 8000,
         ]);
 
@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
             'name' => 'Kerupuk Udang',
             'varian' => 'Original',
             'stok' => 50,
-            'harga_beli' => 7000,
+            'hpp' => 7000,
             'harga_jual' => 10000,
         ]);
 
@@ -35,7 +35,7 @@ class ProductSeeder extends Seeder
             'name' => 'Kerupuk Ikan',
             'varian' => 'Asin',
             'stok' => 80,
-            'harga_beli' => 6000,
+            'hpp' => 6000,
             'harga_jual' => 9000,
         ]);
     }

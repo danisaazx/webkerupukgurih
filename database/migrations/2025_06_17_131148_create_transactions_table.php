@@ -13,12 +13,22 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->integer('qty');
-            $table->integer('total_harga');
-            $table->timestamps();
+        Schema::table('transactions', function (Blueprint $table) {
+            // Hapus kolom yang tidak perlu (kalau masih ada)
+            if (Schema::hasColumn('transactions', 'qty')) {
+                $table->dropColumn('qty');
+            }
+            if (Schema::hasColumn('transactions', 'total_harga')) {
+                $table->dropColumn('total_harga');
+            }
+            if (Schema::hasColumn('transactions', 'harga_satuan')) {
+                $table->dropColumn('harga_satuan');
+            }
+
+            // Tambah kolom yang dibutuhkan
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('nama_pembeli');
+            $table->date('tanggal_pembelian');
         });
     }
 

@@ -17,8 +17,7 @@ class LaporanController extends Controller
         $awal = Carbon::parse($bulan)->startOfMonth();
         $akhir = Carbon::parse($bulan)->endOfMonth();
 
-        $transaksi = Transaction::with('product')
-        ->whereBetween('tanggal_penjualan', [$awal, $akhir])
+        $transaksi = Transaction::with('details.product')        ->whereBetween('tanggal_pembelian', [$awal, $akhir])
         ->get();
 
         $totalProfit = 0;
@@ -26,11 +25,11 @@ class LaporanController extends Controller
         $totalPenjualan = 0;
         foreach ($transaksi as $t) {
             foreach ($t->details as $d) {
-                $hpp = $d->product->harga_beli ?? 0;
+                $hpp = $d->product->hpp ?? 0;
                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                 $totalProfit += $produkProfit;
                 $totalQty += $d->qty;
-                $totalPenjualan += $d->total_harga;
+                $totalPenjualan += $d->qty * $d->harga_satuan;
             }
         }
 
@@ -49,8 +48,7 @@ class LaporanController extends Controller
         $awal = Carbon::parse($bulan)->startOfMonth();
         $akhir = Carbon::parse($bulan)->endOfMonth();
 
-        $transaksi = Transaction::with('product')
-        ->whereBetween('tanggal_penjualan', [$awal, $akhir])
+        $transaksi = Transaction::with('details.product')        ->whereBetween('tanggal_pembelian', [$awal, $akhir])
         ->get();
 
         $totalProfit = 0;
@@ -58,11 +56,11 @@ class LaporanController extends Controller
         $totalPenjualan = 0;
         foreach ($transaksi as $t) {
             foreach ($t->details as $d) {
-                $hpp = $d->product->harga_beli ?? 0;
+                $hpp = $d->product->hpp ?? 0;
                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                 $totalProfit += $produkProfit;
                 $totalQty += $d->qty;
-                $totalPenjualan += $d->total_harga;
+                $totalPenjualan += $d->qty * $d->harga_satuan;
             }
         }
 

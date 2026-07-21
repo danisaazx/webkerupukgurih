@@ -9,7 +9,7 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_pembeli','tanggal_penjualan'];
+    protected $fillable = ['user_id','nama_pembeli','tanggal_pembelian'];
 
     public function product()
     {
@@ -18,5 +18,10 @@ class Transaction extends Model
     public function details()
     {
         return $this->hasMany(TransaksiDetail::class);
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

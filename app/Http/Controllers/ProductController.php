@@ -66,44 +66,53 @@ public function store(Request $request)
             $satuan = strtolower($request->satuan[$i]);
 
             // Konversi gram ke kg
-            if($satuan === 'gram') {
-                $jumlah = $jumlah / 1000;
-                $satuan = 'kg';
+            if ($satuan === 'gram' || $satuan === 'g') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'kg';
+                } elseif ($satuan === 'ml') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'liter';
+                } elseif ($satuan === 'liter' || $satuan === 'l') {
+                    $satuan = 'liter';
+                }
+ 
+                $bahan = BahanBaku::find($bahanId);
+                if ($bahan) {
+                    $hpp += $bahan->harga_beli * $jumlah;
+                }
             }
-
-            // Ambil harga beli bahan baku
-            $bahan = BahanBaku::find($bahanId);
-            if ($bahan) {
-                $hpp += $bahan->harga_beli * $jumlah;
-            }
-        }
-
-        // Simpan produk dengan HPP
-        $product = Product::create([
-            'name' => $request->name,
-            'varian' => $request->varian,
-            'harga_beli' => $hpp,
-            'harga_jual' => $request->harga_jual,
-        ]);
-
-        // Simpan resep
-        foreach ($request->bahan_baku_id as $i => $bahanId)
-        {
-            $jumlah = $request->qty_per_batch[$i];
-            $satuan = strtolower($request->satuan[$i]);
-
-            if($satuan === 'gram') {
-                $jumlah = $jumlah / 1000;
-                $satuan = 'kg';
-            }
-
-            ProductRecipe::create([
-                'product_id' => $product->id,
-                'bahan_baku_id' => $bahanId,
-                'qty_per_batch' => $jumlah,
-                'satuan' => $satuan,
+ 
+            // Simpan produk dengan HPP
+            $product = Product::create([
+                'name' => $request->name,
+                'varian' => $request->varian,
+                'hpp' => 0,
+                'harga_jual' => $request->harga_jual,
             ]);
-        }
+ 
+            // Simpan resep
+            foreach ($request->bahan_baku_id as $i => $bahanId)
+            {
+                $jumlah = $request->qty_per_batch[$i];
+                $satuan = strtolower($request->satuan[$i]);
+ 
+                if ($satuan === 'gram' || $satuan === 'g') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'kg';
+                } elseif ($satuan === 'ml') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'liter';
+                } elseif ($satuan === 'liter' || $satuan === 'l') {
+                    $satuan = 'liter';
+                }
+ 
+                ProductRecipe::create([
+                    'product_id' => $product->id,
+                    'bahan_baku_id' => $bahanId,
+                    'qty_per_batch' => $jumlah,
+                    'satuan' => $satuan,
+                ]);
+            }
 
         DB::commit();
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
@@ -153,57 +162,68 @@ public function store(Request $request)
 
         // Hitung ulang HPP berdasarkan resep yang diinput
         $hpp = 0;
-        foreach ($request->bahan_baku_id as $i => $bahanId)
-        {
-            $jumlah = $request->qty_per_batch[$i];
-            $satuan = strtolower($request->satuan[$i]);
-
-            if ($satuan === 'gram') {
-                $jumlah = $jumlah / 1000;
-                $satuan = 'kg';
+            foreach ($request->bahan_baku_id as $i => $bahanId)
+            {
+                $jumlah = $request->qty_per_batch[$i];
+                $satuan = strtolower($request->satuan[$i]);
+ 
+                if ($satuan === 'gram' || $satuan === 'g') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'kg';
+                } elseif ($satuan === 'ml') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'liter';
+                } elseif ($satuan === 'liter' || $satuan === 'l') {
+                    $satuan = 'liter';
+                }
+ 
+                $bahan = BahanBaku::find($bahanId);
+                if ($bahan) {
+                    $hpp += $bahan->harga_beli * $jumlah;
+                }
             }
-
-            $bahan = BahanBaku::find($bahanId);
-            if ($bahan) {
-                $hpp += $bahan->harga_beli * $jumlah;
-            }
-        }
-
-        // Update produk dengan HPP baru
-        $product->update([
-            'name' => $request->name,
-            'varian' => $request->varian,
-            'harga_beli' => $hpp,
-            'harga_jual' => $request->harga_jual,
-        ]);
-
-        // Hapus semua resep lama
-        $product->recipes()->delete();
-
-        // Simpan ulang resep baru
-        foreach ($request->bahan_baku_id as $i => $bahanId)
-        {
-            $jumlah = $request->qty_per_batch[$i];
-            $satuan = strtolower($request->satuan[$i]);
-
-            if ($satuan === 'gram') {
-                $jumlah = $jumlah / 1000;
-                $satuan = 'kg';
-            }
-
-            ProductRecipe::create([
-                'product_id' => $product->id,
-                'bahan_baku_id' => $bahanId,
-                'qty_per_batch' => $jumlah,
-                'satuan' => $satuan,
+ 
+            // Update produk dengan HPP baru
+            $product->update([
+                'name' => $request->name,
+                'varian' => $request->varian,
+                'hpp' => $hpp,
+                'harga_jual' => $request->harga_jual,
             ]);
-        }
+ 
+            // Hapus semua resep lama
+            $product->recipes()->delete();
+ 
+            // Simpan ulang resep baru
+            foreach ($request->bahan_baku_id as $i => $bahanId)
+            {
+                $jumlah = $request->qty_per_batch[$i];
+                $satuan = strtolower($request->satuan[$i]);
+ 
+                if ($satuan === 'gram' || $satuan === 'g') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'kg';
+                } elseif ($satuan === 'ml') {
+                    $jumlah = $jumlah / 1000;
+                    $satuan = 'liter';
+                } elseif ($satuan === 'liter' || $satuan === 'l') {
+                    $satuan = 'liter';
+                }
+ 
+                ProductRecipe::create([
+                    'product_id' => $product->id,
+                    'bahan_baku_id' => $bahanId,
+                    'qty_per_batch' => $jumlah,
+                    'satuan' => $satuan,
+                ]);
+            }
 
         DB::commit();
         return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!.');
-    } catch (\Throwable $e) {
+    } catch (\Exception $e) {
         DB::rollback();
-        return back()->with('error', 'Terjadi kesalahan'. $e->getMessage());
+        //!return back()->with('error', 'Terjadi kesalahan')! -->
+        dd($e->getMessage());
     }
 }
 
@@ -220,6 +240,6 @@ public function store(Request $request)
         $product->recipes()->delete();
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!.');
+        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
     }
 }

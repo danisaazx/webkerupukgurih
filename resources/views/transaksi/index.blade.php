@@ -37,6 +37,7 @@
                         <tr>
                             <th>Tanggal</th>
                             <th>Nama Pembeli</th>
+                            <th>Diinput Oleh    </th>
                             <th>Jumlah Produk</th>
                             <th>Qty</th>
                             <th>Total Harga</th>
@@ -55,16 +56,17 @@
 
                         @foreach($t->details as $d)
                         @php
-                                $hpp = $d->product->harga_beli ?? 0;
+                                $hpp = $d->product->hpp ?? 0;
                                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                                 $profit += $produkProfit;
                                 $qty += $d->qty;
-                                $total_harga += $d->total_harga;
+                                $total_harga += $d->qty * $d->harga_satuan;;
                                 @endphp
                         @endforeach
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($t->tanggal_penjualan)->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($t->tanggal_pembelian)->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
                                 <td>{{ $t->nama_pembeli }}</td>
+                                <td>{{ $t->user->name ?? '-' }}</td>
                                 <td>{{ $t->details->count() }} Produk</td>
                                 <td>
                                     <span class="badge bg-gradient-primary text-white">
@@ -115,7 +117,10 @@
                         <strong>Nama Pembeli:</strong> {{ $t->nama_pembeli ?? '-' }}
                     </div>
                     <div class="col-md-6">
-                        <strong>Tanggal Transaksi:</strong> {{ \Carbon\Carbon::parse($t->tanggal_penjualan)->format('d/m/Y H:i') }}
+                        <strong>Tanggal Transaksi:</strong> {{ \Carbon\Carbon::parse($t->tanggal_pembelian)->format('d/m/Y H:i') }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Diinput Oleh:</strong> {{ $t->user->name ?? '-' }} 
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -124,7 +129,7 @@
                             <tr>
                                 <th>Produk</th>
                                 <th>Qty</th>
-                                <th>Harga Beli</th>
+                                <th>HPP</th>
                                 <th>Harga Satuan</th>
                                 <th>Subtotal</th>
                                 <th>Profit</th>
@@ -136,7 +141,7 @@
                             @endphp
                             @foreach ($t->details as $d)
                             @php
-                                $hpp = $d->product->harga_beli ?? 0;
+                                $hpp = $d->product->hpp ?? 0;
                                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                                 $profit += $produkProfit;
                             @endphp
@@ -145,17 +150,17 @@
                                 <td>{{ $d->qty }}</td>
                                 <td>Rp {{ number_format($hpp, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($d->harga_satuan, 0, ',', '.') }}</td>
-                                <td>Rp {{ number_format($d->total_harga, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($d->qty * $d->harga_satuan, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($produkProfit, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-3 text-end">
+                <!-- <div class="mt-3 text-end">
                     <strong>Total Profit: </strong>
                     <span class="text-success fw-bold">Rp {{ number_format($profit, 0, ',', '.') }}</span>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

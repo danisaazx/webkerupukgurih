@@ -15,10 +15,12 @@
             <button class="btn btn-gradient-primary shadow-sm">
                 <i class="bi bi-search"></i> Tampilkan
             </button>
-            <a href="{{ route('laporan.bulanan.excel', ['bulan' => $bulan]) }}" class="btn btn-success shadow-sm">
+            <a href="{{ route('laporan.bulanan.excel', ['bulan' => $bulan]) }}" class="btn btn-success shadow-sm"
+                onclick="window.location.href=this.href+'&ngrok-skip-browser-warning=true'; return false;">
                 <i class="bi bi-file-earmark-excel"></i> Excel
             </a>
-            <a href="{{ route('laporan.bulanan.pdf', ['bulan' => $bulan]) }}" class="btn btn-danger shadow-sm">
+            <a href="{{ route('laporan.bulanan.pdf', ['bulan' => $bulan]) }}" class="btn btn-danger shadow-sm"
+            onclick="window.location.href=this.href+'&ngrok-skip-browser-warning=true'; return false;">
                 <i class="bi bi-file-earmark-pdf"></i> PDF
             </a>
         </div>
@@ -70,15 +72,16 @@
                     </thead>
                     <tbody>
                         @foreach($transaksi as $t)
-                        @foreach($t->details as $d)
+                       @foreach($t->details as $d)
+                            @if($d->product)
                             @php
-                                $hpp = $d->product->harga_beli ?? 0;
+                                $hpp = $d->product->hpp ?? 0;
                                 $profit = ($d->harga_satuan - $hpp) * $d->qty;
                             @endphp
                             <tr>
                                 <td>
                                     <span class="badge bg-gradient-secondary px-3 py-2">
-                                        {{ \Carbon\Carbon::parse($d->tanggal_penjualan)->format('d/m/Y') }}
+                                        {{ \Carbon\Carbon::parse($t->tanggal_pembelian)->format('d/m/Y') }}
                                     </span>
                                 </td>
                                 <td>
@@ -98,12 +101,13 @@
                                 <td>
                                     <span class="badge bg-gradient-primary text-white">{{ $d->qty }}</span>
                                 </td>
-                                <td>Rp {{ number_format($d->product->harga_beli, 0, ',', '.') }}</td>
-                                <td>Rp {{ number_format($d->total_harga, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($d->product->hpp, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($d->qty * $d->harga_satuan, 0, ',', '.') }}</td>
                                 <td>
                                     <span class="fw-semibold text-success">Rp {{ number_format($profit, 0, ',', '.') }}</span>
                                 </td>
                             </tr>
+                            @endif
                         @endforeach
                         @endforeach
                     </tbody>

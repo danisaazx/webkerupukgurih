@@ -44,7 +44,18 @@
                             <td>{{ $item->tanggal_produksi }}</td>
                             <td>
                                 @if($item->expired_date)
-                                    <span class="badge bg-success">{{ $item->expired_date }}</span>
+                                    @php $status = $item->status_expired; @endphp
+                                    <span class="badge bg-{{ $status['color'] === 'red' ? 'danger' : ($status['color'] === 'orange' ? 'warning text-dark' : 'success') }}">
+                                        {{ \Carbon\Carbon::parse($item->expired_date)->format('Y-m-d') }}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">
+                                        @if($status['status'] === 'expired')
+                                            Lewat {{ $status['days'] }} hari
+                                        @elseif($status['status'] === 'warning')
+                                            {{ $status['days'] }} hari lagi
+                                        @endif
+                                    </small>
                                 @else
                                     <span class="badge bg-secondary">-</span>
                                 @endif

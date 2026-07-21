@@ -19,6 +19,13 @@
         </div>
     @endif
 
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>{{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -29,6 +36,7 @@
                             <th>Satuan</th>
                             <th>Stok</th>
                             <th>Harga Beli</th>
+                            <th>Total Harga</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -39,22 +47,42 @@
                             <td>{{ $bahan->satuan }}</td>
                             <td>
                                 @if($bahan->stok < 10)
-                                    <span class="badge bg-danger">{{ $bahan->stok }}</span>
+                                    <span class="badge bg-danger">{{ (int) $bahan->stok }}</span>
                                 @else
-                                    <span class="badge bg-success">{{ $bahan->stok }}</span>
+                                    <span class="badge bg-success">{{ (int) $bahan->stok }}</span>
                                 @endif
                             </td>
-                            <td>Rp {{ number_format($bahan->harga_beli, 2, ',', '.') }}</td>
+                            <td>Rp {{ number_format($bahan->harga_beli, 0) }}</td>
+                            <td>Rp {{ number_format($bahan->harga_beli * $bahan->stok, 0) }}</td>
                             <td class="text-center">
                                 <a href="{{ route('bahan_baku.edit', $bahan->id) }}" class="btn btn-warning btn-sm me-1">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <form action="{{ route('bahan_baku.destroy', $bahan->id) }}" method="POST" style="display:inline;">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin?')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalHapus{{ $bahan->id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalHapus{{ $bahan->id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Yakin hapus?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Yakin ingin menghapus bahan baku <strong>{{ $bahan->name }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                                                <form action="{{ route('bahan_baku.destroy', $bahan->id) }}" method="POST">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Yakin</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -65,7 +93,6 @@
     </div>
 </div>
 
-<!-- Bootstrap Icons (jika belum ada di layout) -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>

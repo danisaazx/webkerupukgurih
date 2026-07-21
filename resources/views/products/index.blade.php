@@ -68,20 +68,37 @@
                             <td>Rp {{ number_format($product->harga_jual,0,',','.') }}</td>
                             <td>
                                 <span class="badge bg-gradient-primary text-white">
-                                    Rp {{ number_format($product->harga_beli,0,',','.') }}
+                                    Rp {{ number_format($product->hpp,0,',','.') }}
                                 </span>
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('products.edit', $product) }}" class="btn btn-warning btn-sm me-1">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalHapus{{ $product->id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                                <div class="modal fade" id="modalHapus{{ $product->id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Yakin Hapus?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Yakin ingin menghapus produk <strong>{{ $product->name }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                                                <form action="{{ route('products.destroy', $product) }}" method="POST">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Yakin</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

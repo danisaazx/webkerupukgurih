@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\Produksi;
 
 class DashboardController extends Controller
 {
@@ -20,15 +21,21 @@ class DashboardController extends Controller
         $totalPenjualan = 0;
         foreach ($transactions as $t) {
             foreach ($t->details as $d) {
-                $hpp = $d->product->harga_beli ?? 0;
+                $hpp = $d->product->hpp ?? 0;
+                $penjualan = $d->qty * $d->harga_satuan;
                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                 $totalProfit += $produkProfit;
                 $totalQty += $d->qty;
-                $totalPenjualan += $d->total_harga;
+                $totalPenjualan += $penjualan;
             }
         }
 
+        // Produksi yang sudah/akan kadaluarsa (dalam 7 hari ke depan)
+        $produksiExpired = Produksi::with('product')
+            ->whereDate('expired_date', '<=', now()->addDays(7))
+            ->orderBy('expired_date', 'asc')
+            ->get();
 
-        return view('dashboard', compact('products', 'transactions', 'lowStockProducts', 'totalPenjualan', 'totalProfit'));
+        return view('dashboard', compact('products', 'transactions', 'lowStockProducts', 'totalPenjualan', 'totalProfit', 'produksiExpired'));
     }
 }

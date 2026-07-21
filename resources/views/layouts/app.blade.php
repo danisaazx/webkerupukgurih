@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/seo.png">
     <style>
         @media (max-width: 991.98px) {
             .sidebar-desktop {
@@ -28,12 +29,12 @@
             <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
                 <i class="bi bi-list fs-3"></i>
             </button>
-            <a class="navbar-brand fw-bold" href="#">Stock Manager</a>
+            <a class="navbar-brand fw-bold" href="#">Kerupuk Gurih</a>
             <div class="ms-auto">
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="navbarUserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="" width="32" height="32" class="rounded-circle me-2">
-                        <strong>{{ Auth::user()->name }}</strong>
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()?->name }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                        <strong>{{ Auth::user()?->name }}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="navbarUserDropdown">
                         <li><a class="dropdown-item" href="/profile">Profile</a></li>
@@ -56,7 +57,7 @@
         <!-- Sidebar Desktop -->
         <div class="sidebar-desktop flex-shrink-0 p-3 bg-light shadow-sm" style="width: 240px;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-                <span class="fs-4 fw-bold text-primary"><i class="bi bi-box-seam"></i> Stock Manager</span>
+                <span class="fs-4 fw-bold text-primary"><i class="bi bi-box-seam"></i> Kerupuk Gurih </span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
@@ -79,23 +80,23 @@
                     <div class="collapse {{ request()->is('products*') || request()->is('bahan_baku*') || request()->is('produksi*') ? 'show' : '' }}" id="masterDataMenu">
                         <ul class="nav flex-column ms-3">
                             <li>
-                                <a href="{{ route('products.index') }}" class="nav-link {{ request()->is('products*') ? 'active' : 'text-dark' }}">
-                                    <i class="bi bi-boxes me-2"></i>
-                                    Products
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('bahan_baku.index')}}" class="nav-link {{ request()->is('bahan_baku*') ? 'active' : 'text-dark'}}">
-                                    <i class="bi bi-archive me-2"></i>
-                                    Ingredients
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('produksi.index')}}" class="nav-link {{ request()->is('produksi*') ? 'active' : 'text-dark'}}">
-                                    <i class="bi bi-truck me-2"></i>
-                                    Production
-                                </a>
-                            </li>
+                                    <a href="{{ route('bahan_baku.index')}}" class="nav-link {{ request()->is('bahan_baku*') ? 'active' : 'text-dark'}}">
+                                        <i class="bi bi-archive me-2"></i>
+                                        Ingredients
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('products.index') }}" class="nav-link {{ request()->is('products*') ? 'active' : 'text-dark' }}">
+                                        <i class="bi bi-boxes me-2"></i>
+                                        Products
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('produksi.index')}}" class="nav-link {{ request()->is('produksi*') ? 'active' : 'text-dark'}}">
+                                        <i class="bi bi-truck me-2"></i>
+                                        Production
+                                    </a>
+                                </li>
                         </ul>
                     </div>
                 </li>
@@ -115,8 +116,8 @@
             <hr>
             <div class="dropdown mt-auto">
                 <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="sidebarUserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>{{ Auth::user()->name }}</strong>
+                    <img src="https://ui-avatars.com/api/?name={{ Auth::user()?->name }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>{{ Auth::user()?->name }}</strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="sidebarUserDropdown">
                     <li><a class="dropdown-item" href="/profile">Profile</a></li>
@@ -135,7 +136,7 @@
         <!-- Sidebar Offcanvas Mobile -->
         <div class="offcanvas offcanvas-start offcanvas-lg" tabindex="-1" id="sidebarOffcanvas">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title"><i class="bi bi-box-seam me-2"></i>Stock Manager</h5>
+                <h5 class="offcanvas-title"><i class="bi bi-box-seam me-2"></i>Kerupuk Gurih </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
             <div class="offcanvas-body p-0">
@@ -149,15 +150,15 @@
                     <!-- Master Data Menu with Collapse (Mobile: show all) -->
                     <li class="mt-2 mb-1 text-muted small">Master Data</li>
                     <li>
-                        <a href="{{ route('products.index') }}" class="nav-link {{ request()->is('products*') ? 'active' : 'text-dark' }}">
-                            <i class="bi bi-boxes me-2"></i>
-                            Products
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ route('bahan_baku.index')}}" class="nav-link {{ request()->is('bahan_baku*') ? 'active' : 'text-dark'}}">
                             <i class="bi bi-archive me-2"></i>
                             Ingredients
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('products.index') }}" class="nav-link {{ request()->is('products*') ? 'active' : 'text-dark' }}">
+                            <i class="bi bi-boxes me-2"></i>
+                            Products
                         </a>
                     </li>
                     <li>
@@ -183,8 +184,8 @@
                 <hr>
                 <div class="dropdown px-3 pb-3">
                     <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="sidebarUserDropdownMobile" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" alt="" width="32" height="32" class="rounded-circle me-2">
-                        <strong>{{ Auth::user()->name }}</strong>
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()?->name }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                        <strong>{{ Auth::user()?->name }}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="sidebarUserDropdownMobile">
                         <li><a class="dropdown-item" href="/profile">Profile</a></li>

@@ -23,11 +23,6 @@
                             <input type="text" name="nama_pembeli" class="form-control" placeholder="Contoh: Pelanggan Toko">
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Tanggal Penjualan</label>
-                            <input type="date" name="tanggal_penjualan" class="form-control" value="{{ date('Y-m-d') }}" required>
-                        </div>
-
                         <label class="form-label fw-semibold">Produk Dibeli</label>
                         <div id="produk-container">
                             <div class="row g-2 align-items-end mb-2 produk-row">

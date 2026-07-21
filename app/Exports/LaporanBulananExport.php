@@ -21,7 +21,7 @@ class LaporanBulananExport implements FromView
         $awal = Carbon::parse($this->bulan)->startOfMonth();
         $akhir = Carbon::parse($this->bulan)->endOfMonth();
 
-        $transaksi = Transaction::with('details.product')->whereBetween('tanggal_penjualan', [$awal, $akhir])->get();
+        $transaksi = Transaction::with('details.product')->whereBetween('tanggal_pembelian', [$awal, $akhir])->get();
 
         $totalPenjualan = 0;
         $totalProfit = 0;
@@ -29,11 +29,11 @@ class LaporanBulananExport implements FromView
 
         foreach ($transaksi as $t) {
             foreach ($t->details as $d) {
-                $hpp = $d->product->harga_beli ?? 0;
+                $hpp = $d->product->hpp ?? 0;
                 $produkProfit = ($d->harga_satuan - $hpp) * $d->qty;
                 $totalProfit += $produkProfit;
                 $totalQty += $d->qty;
-                $totalPenjualan += $d->total_harga;
+                $totalPenjualan += $d->qty * $d->harga_satuan;
             }
         }
 

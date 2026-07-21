@@ -18,10 +18,10 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         // $transaction = Transaction::with('product')->latest()->get();
-        $query = Transaction::with('details');
+        $query = Transaction::with('details','user');
         if ($request->filled('tanggal'))
         {
-            $query->whereDate('tanggal_penjualan', $request->tanggal);
+            $query->whereDate('tanggal_pembelian', $request->tanggal);
         }
 
         $transaction = $query->latest()->paginate(10);
@@ -54,8 +54,9 @@ class TransactionController extends Controller
         ]);
         // dd($request->nama_pembeli);
         $transaksi = Transaction::create([
+            'user_id' => auth()->id(),
             'nama_pembeli' => $request->nama_pembeli,
-            'tanggal_penjualan' => $request->tanggal_penjualan,
+            'tanggal_pembelian' => now(),
         ]);
 
         foreach ($request->product_id as $i => $idProduk) {
@@ -71,7 +72,6 @@ class TransactionController extends Controller
                 'product_id' => $produk->id,
                 'qty' => $qty,
                 'harga_satuan' => $produk->harga_jual,
-                'total_harga' => $produk->harga_jual * $qty,
             ]);
 
             // Kurangi stok produk
