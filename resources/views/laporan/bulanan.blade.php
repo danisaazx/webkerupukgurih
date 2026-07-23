@@ -5,7 +5,7 @@
 @section('content')
 <div class="container py-4">
     <h2 class="fw-bold text-primary mb-3">
-        <i class="bi bi-graph-up-arrow me-2"></i>Laporan Bulanan
+        <i class="bi bi-graph-up-arrow me-2"></i>Laporan Penjualan
     </h2>
 
     <form method="GET" class="row g-2 mb-4 align-items-end">

@@ -32,6 +32,7 @@ class DashboardController extends Controller
 
         // Produksi yang sudah/akan kadaluarsa (dalam 7 hari ke depan)
         $produksiExpired = Produksi::with('product')
+            ->whereHas('product')
             ->whereDate('expired_date', '<=', now()->addDays(7))
             ->orderBy('expired_date', 'asc')
             ->get();

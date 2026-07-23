@@ -27,7 +27,7 @@
     </div>
     @endif
     
-    @if($produksiExpired->count())
+    @if($produksiExpired->count()> 0)
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="bi bi-calendar-x me-2"></i>
         <strong>Perhatian:</strong> Ada {{ $produksiExpired->count() }} produk yang sudah/akan kadaluarsa:
