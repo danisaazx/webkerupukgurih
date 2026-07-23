@@ -9,17 +9,24 @@ use Carbon\Carbon;
 class LaporanBulananExport implements FromView
 {
     protected $bulan;
+    protected $tanggal;
 
-    public function __construct($bulan)
+    public function __construct($bulan, $tanggal = null)
     {
         $this->bulan = $bulan;
+        $this->tanggal = $tanggal;
     }
 
     public function view(): View
     {
         // Ambil data transaksi dan detailnya
-        $awal = Carbon::parse($this->bulan)->startOfMonth();
-        $akhir = Carbon::parse($this->bulan)->endOfMonth();
+        if ($this->tanggal) {
+            $awal = Carbon::parse($this->tanggal)->startOfDay();
+            $akhir = Carbon::parse($this->tanggal)->endOfDay();
+        } else {
+            $awal = Carbon::parse($this->bulan)->startOfMonth();
+            $akhir = Carbon::parse($this->bulan)->endOfMonth();
+        }
 
         $transaksi = Transaction::with('details.product')->whereBetween('tanggal_pembelian', [$awal, $akhir])->get();
 
